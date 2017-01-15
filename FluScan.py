@@ -134,7 +134,7 @@ def main(_ip1,_ip2):
         _ip3 = ip_add(_ip3)
 
 if __name__ == "__main__":
-    print 'FluScan, an IPv4 scanner. Created by http://www.flu-project.com\n'
+    print '[FluScan], an IPv4 scanner. Created by http://www.flu-project.com\n'
     ip1 = '192.167.255.255'
     ip2 = '192.168.2.255'
     ip2, ip1 = ip_order(ip1, ip2)
