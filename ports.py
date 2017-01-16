@@ -1,9 +1,4 @@
 COMMON_PORTS = {
-    21: 'ftp',
-    53: 'domain',
-    80: 'http'
-}
-'''
     1: 'tcpmux',
     5: 'rje',
     7: 'echo',
@@ -221,7 +216,6 @@ COMMON_PORTS = {
     60177: 'tfido',
     60179: 'fido'
 }
-'''
 
 def getcommonports():
     return COMMON_PORTS
