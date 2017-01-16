@@ -32,16 +32,18 @@ def hosts(_ip):
             run_query("INSERT INTO t_hosts (ip, host, date) VALUES ('%s', '%s', now()) ON DUPLICATE KEY UPDATE host='%s', date=now()" % (_ip, _host, _host))
             return run_query("SELECT id FROM t_hosts WHERE ip='%s'" % _ip)[0][0]
     except:
-        return None
+        run_query("INSERT INTO t_hosts (ip, host, date) VALUES ('%s', '%s', now()) ON DUPLICATE KEY UPDATE host='%s', date=now()" % (_ip, _host, _host))
+        return run_query("SELECT id FROM t_hosts WHERE ip='%s'" % _ip)[0][0]
 
 def portscan(_host, _port):
     ''' This function execute a port scan '''
     banner = ''
     try:
+        print _port
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.5)
+        sock.settimeout(0.1)
         result = sock.connect_ex((_host, _port))
-        sock.send('GET / HTTP/1.1 \r\n')
+        sock.send('GET / HTTP/1.1\r\n')
         banner = sock.recv(1024)
         sock.close()
     except:
@@ -122,7 +124,7 @@ def main(_ip1,_ip2):
     _ip3_prev = ""
     while (_ip3_prev <> _ip2):
         if not ip_private(_ip3):
-            print _ip3
+            print '[ip] '+_ip3
             try:
                 _id = hosts(_ip3)
                 if _id:
@@ -135,7 +137,7 @@ def main(_ip1,_ip2):
 
 if __name__ == "__main__":
     print '[FluScan], an IPv4 scanner. Created by http://www.flu-project.com\n'
-    ip1 = '8.8.8.8'
-    ip2 = '8.8.8.8'
+    ip1 = 'A.B.C.D'
+    ip2 = 'V.X.Y.Z'
     ip2, ip1 = ip_order(ip1, ip2)
     main(ip1, ip2)
