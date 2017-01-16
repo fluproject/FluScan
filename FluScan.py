@@ -41,7 +41,7 @@ def portscan(_host, _port):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.settimeout(0.5)
         result = sock.connect_ex((_host, _port))
-        sock.send('GET HTTP/1.1 \r\n')
+        sock.send('GET / HTTP/1.1 \r\n')
         banner = sock.recv(1024)
         sock.close()
     except:
@@ -135,7 +135,7 @@ def main(_ip1,_ip2):
 
 if __name__ == "__main__":
     print '[FluScan], an IPv4 scanner. Created by http://www.flu-project.com\n'
-    ip1 = '192.167.255.255'
-    ip2 = '192.168.2.255'
+    ip1 = '8.8.8.8'
+    ip2 = '8.8.8.8'
     ip2, ip1 = ip_order(ip1, ip2)
     main(ip1, ip2)
