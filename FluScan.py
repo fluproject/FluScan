@@ -2,7 +2,7 @@ import socket
 import pygeoip
 from struct import unpack
 from socket import AF_INET, inet_pton
-from ports import getcommonports
+from ports import getcommonports, portscan
 from dbconnect import Dbconnect 
 
 def geo(_file, _ip, _id):
@@ -15,6 +15,7 @@ def geo(_file, _ip, _id):
         dbcon.runquery(q)
     except:
         pass
+
 def hosts(_ip):
     ''' This function search the hostnames '''
     _host = None
@@ -26,20 +27,6 @@ def hosts(_ip):
     except:
         dbcon.runquery("INSERT INTO t_hosts (ip, host, date) VALUES ('%s', '%s', now()) ON DUPLICATE KEY UPDATE host='%s', date=now()" % (_ip, _host, _host))
         return dbcon.runquery("SELECT id FROM t_hosts WHERE ip='%s'" % _ip)[0][0]
-
-def portscan(_host, _port):
-    ''' This function execute a port scan '''
-    banner = ''
-    try:
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.015)
-        result = sock.connect_ex((_host, _port))
-        sock.send('GET / HTTP/1.1\r\n')
-        banner = sock.recv(1024)
-        sock.close()
-    except:
-		pass
-    return result, banner
 
 def ports(_ip, _id):
     ''' This function search open ports '''
