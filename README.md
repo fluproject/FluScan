@@ -10,17 +10,7 @@ ip1 = 'A.B.C.D'
 
 ip2 = 'V.X.Y.Z'
 
-Also, you need to modify the connection data of the database and load the database tables.
-
-# Database
-
-DB_HOST = 'localhost'
-
-DB_USER = 'fluscan'
-
-DB_PASS = 'F1u$c4n'
-
-DB_NAME = 'fluscan'
+Also, you need to modify the connection data of the MongoDB database.
 
 Next, you have to execute the tool using this command:
 

@@ -227,7 +227,7 @@ def portscan(_host, _port):
     banner = ''
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.settimeout(0.015)
+        sock.settimeout(0.025)
         result = sock.connect_ex((_host, _port))
         sock.send('GET / HTTP/1.1\r\n')
         banner = sock.recv(1024)
