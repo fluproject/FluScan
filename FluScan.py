@@ -1,8 +1,10 @@
 import socket
 import pygeoip
 import json
+import requests
 from ports import getcommonports, portscan
 from ipaddress import ip_private, ip_add, ip_order
+from hetrixblacklist import blacklistscan
 from mongo import ConexionMongoDB
 
 def geo(_file, _ip):
@@ -41,7 +43,7 @@ def ports(_ip):
         pass
     return _ports
 
-def main(_ip1, _ip2, _mongocon):
+def main(_ip1, _ip2, _mongocon, _token, _analyzeblacklist):
     ''' Main function, launch the main activities '''
     conexion = ConexionMongoDB(_mongocon)
     conexion.open_conexion()
@@ -55,7 +57,11 @@ def main(_ip1, _ip2, _mongocon):
                 _host = hosts(_ip3)
                 ip_list_values = geo('GeoIP/GeoLiteCity.dat', _ip3)
                 json_ports = ports(_ip3)
-                dictionary = {"host":{_ip3.replace(".","_"):[{"ip":_ip3, "hostname":_host, "geo":ip_list_values, "ports":json_ports}]}}
+                if _analyzeblacklist:
+                    blacklistpages = blacklistscan(_ip3, _token)
+                    dictionary = {"host":{_ip3.replace(".","_"):[{"ip":_ip3, "hostname":_host, "geo":ip_list_values, "ports":json_ports, "blacklist":blacklistpages}]}}
+                else:
+                    dictionary = {"host":{_ip3.replace(".","_"):[{"ip":_ip3, "hostname":_host, "geo":ip_list_values, "ports":json_ports}]}}                 
                 document.append(dictionary)
                 conexion.insert_doc("hosts",document)
             except ValueError:
@@ -66,15 +72,20 @@ def main(_ip1, _ip2, _mongocon):
     del conexion
 
 if __name__ == "__main__":
-    print '[FluScan], an IPv4 scanner. Created by http://www.flu-project.com\n'
+    print '[FluScan], an IPv4 scanner. Created by http://www.flu-project.com & https://www.zerolynx.com\n'
     # ************** ONLY MODIFY HERE **************
     # Step 1: Put here the first ip address
-    ip1 = '8.8.8.8'
+    ip1 = 'AAA.BBB.CCC.DDD'
     # Step 2: Put here the last ip address
-    ip2 = '8.8.8.8'
+    ip2 = 'AAA.BBB.CCC.DDD'
     # Step 3: Install MongoDB, and create a database with a named "hosts" collection
     # Step 4: Put here your connection data
     mongocon = 'mongodb://USER:PASS@MONGODB:PORT/DATABASE'
+    # Step 5: Put here your Hetrix Blacklist token
+    token = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    # If you don't want to analyze blacklists, you can put the following flag to 'False', and you don't need to fill the previous "token" field
+    analyzeblacklist = True
     # ************** ONLY MODIFY HERE **************
     ip2, ip1 = ip_order(ip1, ip2)
-    main(ip1, ip2, mongocon)
+    main(ip1, ip2, mongocon, token, analyzeblacklist)
+    
